@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="HomePage.css">
+    <link rel="stylesheet" href="pages.css">
+    <title>Projects - Joshua Visser</title>
+</head>
+
+<body>
+
+    <!-- Burger Menu -->
+    <header class="header">
+        <div class="header__container">
+            <h1 class="header__title">JOSHUA VISSER</h1>
+            <button class="burger" id="burgerBtn" aria-label="Toggle navigation menu">
+                <span class="burger__line"></span>
+                <span class="burger__line"></span>
+                <span class="burger__line"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Navigation Menu -->
+    <nav class="nav" id="navMenu">
+        <a href="index.html" class="nav__link">Home</a>
+        <a href="about.html" class="nav__link">CV</a>
+        <a href="skills.html" class="nav__link">Skills</a>
+        <a href="projects.html" class="nav__link active">Projects</a>
+        <a href="contact.html" class="nav__link">Contact</a>
+    </nav>
+
+    <!-- Cybernetic Background Elements -->
+    <div class="cyber-tree">
+        <div class="cyber-branch branch-1"></div>
+        <div class="cyber-branch branch-2"></div>
+        <div class="cyber-branch branch-3"></div>
+    </div>
+
+    <main class="page-container projects-page tech-grid">
+        <!-- Background -->
+        <div class="page-background">
+        </div>
+
+
+
+        <!-- Main Content -->
+
+
+        <!-- Video Tabs -->
+        <div class="video-tabs-container">
+            <div class="video-tabs">
+                <button class="video-tab-button active" data-tab="tower-defence">Tower Defence</button>
+                <button class="video-tab-button" data-tab="roblox-rpg">Roblox RPG</button>
+                <button class="video-tab-button" data-tab="roblox-studio">Roblox Studio</button>
+                <button class="video-tab-button" data-tab="tower-defence-game">Tower Defence Explaining</button>
+                <button class="video-tab-button" data-tab="blue-lock-rivals">Blue Lock Rivals</button>
+                <button class="video-tab-button" data-tab="platformer-game">Platformer Game</button>
+                <button class="video-tab-button" data-tab="art">Art</button>
+            </div>
+
+            <!-- Tower Defence Tab Content -->
+            <div class="video-tab-content active fade-in-up" id="tower-defence">
+                <div class="video-card-rectangular">
+                    <video controls poster="Photos/Persona/PersonaDetails.png" class="video-rectangular">
+                        <source src="Videos/TowerDefence.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-content-info">
+                    <h3 class="project-card-title">Tower Defence</h3>
+                    <p class="project-card-description">This game was built in 2025 as a school project where I had to
+                        design and implement a tower defence. I managed the workflow using Trello with two-week sprints,
+                        completing all assigned tasks on schedule. The most enjoyable part was designing the mechanics
+                        and creating everything myself.</p>
+                </div>
+            </div>
+
+            <!-- Roblox RPG Tab Content -->
+            <div class="video-tab-content fade-in-up" id="roblox-rpg">
+                <div class="video-card-rectangular">
+                    <video controls poster="Photos/Persona/PersonaDetails (2).png" class="video-rectangular">
+                        <source src="Videos/Roblox.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-content-info">
+                    <h3 class="project-card-title">Roblox Project</h3>
+                    <p class="project-card-description">This is a Roblox open-world RPG I'm developing with a small
+                        team Called Grimslayer, Ive started this project in february 2026. In this project, I am the
+                        game manager and owner, I really like working on it everyday managing the trello and the
+                        community. In the future I hop to expand this project into something more succesfull. While I don't write fluent Lua, I have a strong understanding of how Roblox Studio works and its structural foundations. This allows me to effectively assist my developers, implement changes myself, and troubleshoot issues that arise during development.</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <img src="Photos/RobloxStudio1.png" alt="Roblox Studio 1" style="width: 100%; border-radius: 8px;">
+                        <img src="Photos/RobloxStudio2.png" alt="Roblox Studio 2" style="width: 100%; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Roblox Studio Tab Content -->
+            <div class="video-tab-content fade-in-up" id="roblox-studio">
+                <div class="video-card-rectangular">
+                    <img src="Photos/GrimslayerProject.png" alt="Grimslayer Project" class="video-rectangular">
+                </div>
+                <div class="video-content-info">
+                    <h3 class="project-card-title">Roblox Studio</h3>
+                    <p class="project-card-description">I don't write Lua fluently, but I excel at balancing gameplay
+                        and inventing unique mechanics. I also lead a team of 10 developers, providing them with
+                        detailed instructions. Working on Roblox Studio taught me how to communicate professionally with
+                        investors and community managers, giving me a solid grounding in marketing and business.</p>
+                </div>
+            </div>
+
+            <!-- Tower Defence Game Tab Content -->
+            <div class="video-tab-content fade-in-up" id="tower-defence-game">
+                <div class="video-card-rectangular">
+                    <video controls poster="Photos/Persona/Additional2.png" class="video-rectangular">
+                        <source src="Videos/TowerDefenceGame.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-content-info">
+                    <h3 class="project-card-title">Tower Defence Game</h3>
+                    <p class="project-card-description">An engaging tower defence game showcasing strategic gameplay and
+                        creative tower design mechanics. Watch this video for a detailed explanation about how the gameplay works</p>
+                </div>
+            </div>
+
+            <!-- Blue Lock Rivals Tab Content -->
+            <div class="video-tab-content fade-in-up" id="blue-lock-rivals">
+                <div class="video-card-rectangular">
+                    <video controls poster="Photos/Persona/Additional3.png" class="video-rectangular">
+                        <source src="Videos/BlueLockRivals.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-content-info">
+                    <h3 class="project-card-title">Blue Lock Rivals</h3>
+                    <p class="project-card-description">A very popular Roblox game for which I was hired to create
+                        textures and assets. Every VFX shown in this clip was produced by me and a partner, and we
+                        handled the importing into the game.</p>
+                </div>
+            </div>
+
+            <!-- Platformer Game Tab Content -->
+            <div class="video-tab-content fade-in-up" id="platformer-game">
+                <div class="video-card-rectangular">
+                    <video controls poster="Photos/Persona/PersonaDetails (3).png" class="video-rectangular">
+                        <source src="Videos/PlatformerGame.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-content-info">
+                    <h3 class="project-card-title">Platformer Game</h3>
+                    <p class="project-card-description">A dynamic platformer game featuring challenging level design and smooth character mechanics. This was a small school project that I built following a tutorial. The project consists of one simple unfinished level that was more focused on perfecting the mechanics rather than building out a full gameplay loop.</p>
+                    <p class="project-card-description">The core mechanics include shooting, jumping, double jumping, getting killed, and moving around. I extensively used DOtween for the second time, implementing it throughout the game to enhance polish and responsiveness.</p>
+                    <p class="project-card-description">I'm passionate about game feel, and this project was an excellent opportunity to showcase that passion. Every animation, transition, and interaction was carefully crafted to create a satisfying and fluid gameplay experience. Unlike my other projects, this one didn't have Trello management tracking.</p>
+                </div>
+            </div>
+
+            <!-- Art Tab Content -->
+            <div class="video-tab-content fade-in-up" id="art">
+                <div class="video-card-rectangular">
+                    <video controls poster="Photos/Persona/Additional1.png" class="video-rectangular">
+                        <source src="Videos/Sprite animations.mp4" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-content-info">
+                    <h3 class="project-card-title">Game Art & Animation</h3>
+                    <p class="project-card-description">I'm passionate about blending my game art skills with my programming expertise. Creating sprite animations and character designs allows me to bring visual life to my game projects. This collection showcases my ability to craft compelling visuals that enhance gameplay experience.</p>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem;">
+                        <img src="Photos/Faces1.png" alt="Character Faces 1" style="width: 100%; border-radius: 8px;">
+                        <img src="Photos/Faces2.png" alt="Character Faces 2" style="width: 100%; border-radius: 8px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="projects-showcase">
+            <!-- artwork card unchanged -->
+
+
+            <div class="section-divider"></div>
+        </div>
+        </div>
+
+        <!-- Bottom wave effect -->
+        <div class="wave-bottom"></div>
+    </main>
+
+    <!-- UI Sounds Toggle Button -->
+    <button id="uiSoundsToggle" class="ui-sounds-button" aria-label="Toggle UI sounds" title="Toggle UI Sound Effects">
+        <span class="ui-sounds-icon">🔊</span>
+    </button>
+
+    <script src="HomePage.js"></script>
+    <script src="pages.js"></script>
+</body>
+
+</html>
