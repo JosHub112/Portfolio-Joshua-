@@ -1,62 +1,41 @@
-// ==================== FUTURISTIC UI SOUND EFFECTS ====================
+// ==================== UI SOUNDS (lazy, throttled, fails quietly) ====================
 class UISound {
     constructor() {
         this.soundsEnabled = localStorage.getItem('uiSoundsEnabled') !== 'false';
         this.masterVolume = 0.4;
-        
-        // Sound file paths - users can add custom sounds to the /sounds folder
         this.sounds = {
             click: 'sounds/click.mp3',
             hover: 'sounds/hover.mp3',
             tabChange: 'sounds/tab-change.mp3'
         };
-
-        // Audio elements cache
         this.audioCache = {};
+        this.broken = new Set();   // sound files that failed to load are skipped from then on
+        this.lastHover = 0;
     }
 
-    playSound(soundType) {
-        if (!this.soundsEnabled) return;
-
-        const soundPath = this.sounds[soundType];
-        if (!soundPath) {
-            console.warn('Sound not found:', soundType);
-            return;
+    playSound(type) {
+        if (!this.soundsEnabled || this.broken.has(type) || !this.sounds[type]) return;
+        let audio = this.audioCache[type];
+        if (!audio) {
+            audio = new Audio(this.sounds[type]);
+            audio.volume = this.masterVolume;
+            audio.addEventListener('error', () => this.broken.add(type), { once: true });
+            this.audioCache[type] = audio;
         }
-
         try {
-            // Create or reuse audio element
-            if (!this.audioCache[soundType]) {
-                const audio = new Audio(soundPath);
-                audio.volume = this.masterVolume;
-                this.audioCache[soundType] = audio;
-            }
-
-            const audio = this.audioCache[soundType];
-            // Reset audio to start and play
             audio.currentTime = 0;
-            const playPromise = audio.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    console.log('Audio playback error:', error);
-                });
-            }
-        } catch (error) {
-            console.log('Error playing sound:', soundType, error);
-        }
+            const p = audio.play();
+            if (p) p.catch(() => {});
+        } catch (e) { /* ignore */ }
     }
 
-    playClickSound() {
-        this.playSound('click');
-    }
-
+    playClickSound() { this.playSound('click'); }
+    playTabChangeSound() { this.playSound('tabChange'); }
     playHoverSound() {
+        const now = performance.now();
+        if (now - this.lastHover < 90) return;   // throttle so hover sounds never stack up
+        this.lastHover = now;
         this.playSound('hover');
-    }
-
-    playTabChangeSound() {
-        this.playSound('tabChange');
     }
 
     toggleSounds() {
@@ -66,275 +45,231 @@ class UISound {
     }
 }
 
-// Create global sound instance
 const uiSounds = new UISound();
 
-// ==================== INITIALIZE VIDEO TABS FUNCTION ====================
+document.addEventListener('DOMContentLoaded', function () {
+    'use strict';
+    const root = document.documentElement;
 
-function initializeVideoTabs() {
-    try {
-        const tabButtons = document.querySelectorAll('.video-tab-button');
-        const tabContents = document.querySelectorAll('.video-tab-content');
-        
-        if (tabButtons.length === 0) {
-            console.log('No video tabs found');
+    // ---------- Active nav link ----------
+    const page = location.pathname.split('/').pop() || 'index.html';
+    const links = [...document.querySelectorAll('.nav__link')];
+    if (links.some(l => l.getAttribute('href') === page)) {
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === page));
+    }
+
+    // ---------- Page transition (shard wipe) ----------
+    document.addEventListener('click', function (e) {
+        const a = e.target.closest('a[href]');
+        if (!a) return;
+        const href = a.getAttribute('href');
+
+        if (href.startsWith('#')) {                       // smooth in-page anchors
+            if (href.length > 1) {
+                const target = document.querySelector(href);
+                if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            }
             return;
         }
-        
-        console.log('Initializing video tabs with', tabButtons.length, 'buttons');
-        
-        tabButtons.forEach((button, index) => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                uiSounds.playTabChangeSound(); // Play sound on tab click
-                const tabId = this.getAttribute('data-tab');
-                
-                console.log('Clicked tab:', tabId);
-                
-                // Remove active class from all buttons and contents
-                tabButtons.forEach(btn => btn.classList.remove('active'));
-                tabContents.forEach(content => content.classList.remove('active'));
-                
-                // Add active class to clicked button and corresponding content
-                this.classList.add('active');
-                const activeContent = document.getElementById(tabId);
-                if (activeContent) {
-                    activeContent.classList.add('active');
-                    console.log('Activated tab content:', tabId);
-                } else {
-                    console.warn('Tab content not found:', tabId);
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+        if (a.target === '_blank' || a.hasAttribute('download') || /^(mailto:|tel:|javascript:)/i.test(href)) return;
+        if (a.origin !== location.origin || a.href === location.href) return;
+
+        e.preventDefault();
+        uiSounds.playClickSound();
+        root.classList.remove('ready');
+        root.classList.add('leaving');
+        setTimeout(() => { location.href = a.href; }, 620);
+    });
+
+    // Back/forward cache: make sure the wipe panels are not left covering the page
+    window.addEventListener('pageshow', function (e) {
+        if (e.persisted) { root.classList.remove('leaving'); root.classList.add('ready'); }
+    });
+
+    // ---------- Skill level bars (Crystarium style) ----------
+    document.querySelectorAll('.skill-box[data-level]').forEach(box => {
+        box.parentElement.style.setProperty('--lvl', Math.min(1, Number(box.dataset.level) / 100));
+    });
+
+    // ---------- Stagger CV sections ----------
+    document.querySelectorAll('.cv-section').forEach((el, i) => {
+        el.style.animationDelay = (0.2 + i * 0.07) + 's';
+    });
+
+    // ---------- Heavy media: don't download anything until needed ----------
+    document.querySelectorAll('video').forEach(v => { v.preload = 'none'; });
+    document.querySelectorAll('img').forEach(img => { img.loading = 'lazy'; img.decoding = 'async'; });
+
+    // ---------- Code snippet lightbox ----------
+    const snippetImages = document.querySelectorAll('.soulbond-snippet img');
+    if (snippetImages.length) {
+        const lightbox = document.createElement('div');
+        lightbox.className = 'snippet-lightbox';
+        lightbox.setAttribute('aria-hidden', 'true');
+        lightbox.innerHTML = `
+            <div class="snippet-lightbox__backdrop" data-lightbox-close></div>
+            <div class="snippet-lightbox__dialog" role="dialog" aria-modal="true" aria-label="Expanded SoulBond code snippet">
+                <button class="snippet-lightbox__close" type="button" aria-label="Close expanded image" data-lightbox-close>&times;</button>
+                <img class="snippet-lightbox__image" alt="">
+                <p class="snippet-lightbox__caption"></p>
+            </div>
+        `;
+        document.body.appendChild(lightbox);
+
+        const expandedImage = lightbox.querySelector('.snippet-lightbox__image');
+        const caption = lightbox.querySelector('.snippet-lightbox__caption');
+        const closeLightbox = () => {
+            lightbox.classList.remove('is-open');
+            lightbox.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('lightbox-open');
+        };
+
+        snippetImages.forEach(image => {
+            image.setAttribute('tabindex', '0');
+            image.setAttribute('role', 'button');
+            image.setAttribute('aria-label', `${image.alt}. Click to expand.`);
+
+            const openLightbox = () => {
+                expandedImage.src = image.currentSrc || image.src;
+                expandedImage.alt = image.alt;
+                caption.textContent = image.closest('figure')?.querySelector('figcaption')?.textContent || '';
+                lightbox.classList.add('is-open');
+                lightbox.setAttribute('aria-hidden', 'false');
+                document.body.classList.add('lightbox-open');
+                lightbox.querySelector('.snippet-lightbox__close').focus();
+            };
+
+            image.addEventListener('click', openLightbox);
+            image.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    openLightbox();
                 }
             });
-
-            // Add hover sound to tab buttons
-            button.addEventListener('mouseenter', () => {
-                uiSounds.playHoverSound();
-            });
         });
-    } catch (error) {
-        console.error('Error initializing video tabs:', error);
+
+        lightbox.addEventListener('click', event => {
+            if (event.target.closest('[data-lightbox-close]')) closeLightbox();
+        });
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && lightbox.classList.contains('is-open')) closeLightbox();
+        });
     }
-}
 
-// ==================== OPTIMIZED PAGES INTERACTION HANDLER ====================
-document.addEventListener('DOMContentLoaded', function() {
-    'use strict';
-    
-    // Efficient navigation link handling
-    const navLinks = document.querySelectorAll('.nav__link');
-    const currentPath = window.location.pathname;
-    
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (currentPath.includes(href) || (currentPath.endsWith('/') && href === 'index.html')) {
-            link.classList.add('active');
-        }
-        
-        link.addEventListener('click', function() {
-            uiSounds.playClickSound(); // Play click sound
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-        });
-
-        // Add hover sound to nav links
-        link.addEventListener('mouseenter', () => {
-            uiSounds.playHoverSound();
-        });
-    });
-    
-    // Smooth scroll for anchor links
-    document.querySelectorAll('a[href^=\"#\"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        });
-    });
-    
-    // Skill/Project card interaction
-    const skillItems = document.querySelectorAll('.skill-item, .project-card');
-    skillItems.forEach((item, index) => {
-        item.addEventListener('mouseenter', function() {
-            uiSounds.playHoverSound(); // Play hover sound
-            requestAnimationFrame(() => {
-                this.classList.add('hovered');
+    // ---------- Project tabs ----------
+    const tabButtons = [...document.querySelectorAll('.video-tab-button')];
+    const tabPanels = [...document.querySelectorAll('.video-tab-content')];
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            if (btn.classList.contains('active')) return;
+            uiSounds.playTabChangeSound();
+            tabPanels.forEach(p => {
+                p.classList.remove('active');
+                p.querySelectorAll('video').forEach(v => v.pause());   // stop hidden videos
             });
+            tabButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const panel = document.getElementById(btn.dataset.tab);
+            if (panel) panel.classList.add('active');
         });
-        
-        item.addEventListener('mouseleave', function() {
-            requestAnimationFrame(() => {
-                this.classList.remove('hovered');
-            });
-        });
+    });
 
-        item.addEventListener('click', function() {
-            uiSounds.playClickSound(); // Play click sound
-        });
-    });
-    
-    // Lazy initialization for heavy elements
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    
-    document.querySelectorAll('.dialogue-content, .skill-item, .project-card').forEach(el => {
-        observer.observe(el);
-    });
-    
-    // Add click sound to ALL buttons on the page
-    document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', function(e) {
+    // ---------- Sounds: delegated listeners (3 total instead of one per element) ----------
+    const hoverSel = '.nav__link,.video-tab-button,.skill-item:not(.empty-slot),.cta-button,.contact-link,.ui-sounds-button';
+    document.addEventListener('mouseover', function (e) {
+        const t = e.target.closest(hoverSel);
+        if (t && !t.contains(e.relatedTarget)) uiSounds.playHoverSound();
+    }, { passive: true });
+
+    document.addEventListener('click', function (e) {
+        if (e.target.closest('button:not(.video-tab-button):not(#uiSoundsToggle), .skill-item:not(.empty-slot)')) {
             uiSounds.playClickSound();
-        });
-    });
-    
-    // Initialize video tabs
-    initializeVideoTabs();
-
-    // UI Sounds Toggle Button
-    const soundsToggle = document.getElementById('uiSoundsToggle');
-    if (soundsToggle) {
-        // Update button state on load
-        if (!uiSounds.soundsEnabled) {
-            soundsToggle.classList.add('disabled');
         }
+    });
 
-        soundsToggle.addEventListener('click', function(e) {
+    const toggle = document.getElementById('uiSoundsToggle');
+    if (toggle) {
+        const icon = toggle.querySelector('.ui-sounds-icon');
+        const sync = on => {
+            toggle.classList.toggle('disabled', !on);
+            if (icon) icon.textContent = on ? '\uD83D\uDD0A' : '\uD83D\uDD07';
+        };
+        sync(uiSounds.soundsEnabled);
+        toggle.addEventListener('click', function (e) {
             e.preventDefault();
-            const enabled = uiSounds.toggleSounds();
-            
-            if (enabled) {
-                soundsToggle.classList.remove('disabled');
-                uiSounds.playClickSound(); // Play sound when enabled
-                console.log('UI sounds enabled');
-            } else {
-                soundsToggle.classList.add('disabled');
-                console.log('UI sounds disabled');
+            const on = uiSounds.toggleSounds();
+            sync(on);
+            if (on) uiSounds.playClickSound();
+        });
+    }
+
+    // ---------- Local visitor reviews ----------
+    const reviewForm = document.getElementById('reviewForm');
+    const reviewEntries = document.getElementById('reviewEntries');
+    const reviewStatus = document.getElementById('reviewStatus');
+    if (reviewForm && reviewEntries) {
+        const reviewStorageKey = 'portfolioReviews';
+        const getReviews = () => {
+            try {
+                return JSON.parse(localStorage.getItem(reviewStorageKey) || '[]');
+            } catch (error) {
+                return [];
             }
-        });
+        };
 
-        // Add hover sound to toggle button
-        soundsToggle.addEventListener('mouseenter', () => {
-            if (uiSounds.soundsEnabled) {
-                uiSounds.playHoverSound();
+        const renderReviews = () => {
+            const reviews = getReviews();
+            reviewEntries.replaceChildren();
+            if (!reviews.length) {
+                const empty = document.createElement('p');
+                empty.className = 'review-list__empty';
+                empty.textContent = 'No reviews yet. Be the first to leave one.';
+                reviewEntries.appendChild(empty);
+                return;
             }
+
+            reviews.slice().reverse().forEach(review => {
+                const article = document.createElement('article');
+                article.className = 'review-entry';
+
+                const avatar = document.createElement('span');
+                avatar.className = `review-entry__avatar review-entry__avatar--${review.avatar.toLowerCase()}`;
+                avatar.textContent = review.avatar;
+                avatar.setAttribute('aria-hidden', 'true');
+
+                const content = document.createElement('div');
+                content.className = 'review-entry__content';
+                const heading = document.createElement('h4');
+                heading.className = 'review-entry__name';
+                heading.textContent = review.name;
+                const comment = document.createElement('p');
+                comment.className = 'review-entry__comment';
+                comment.textContent = review.comment;
+                content.append(heading, comment);
+                article.append(avatar, content);
+                reviewEntries.appendChild(article);
+            });
+        };
+
+        reviewForm.addEventListener('submit', event => {
+            event.preventDefault();
+            const formData = new FormData(reviewForm);
+            const review = {
+                name: String(formData.get('name')).trim(),
+                avatar: String(formData.get('avatar') || 'A'),
+                comment: String(formData.get('comment')).trim()
+            };
+            if (!review.name || !review.comment) return;
+
+            const reviews = getReviews();
+            reviews.push(review);
+            localStorage.setItem(reviewStorageKey, JSON.stringify(reviews.slice(-20)));
+            reviewForm.reset();
+            renderReviews();
+            if (reviewStatus) reviewStatus.textContent = 'Your review has been added.';
         });
-    }
-});
 
-    
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
+        renderReviews();
     }
-    
-    commentForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const name = document.getElementById('commentName').value.trim();
-        const email = document.getElementById('commentEmail').value.trim();
-        const text = document.getElementById('commentText').value.trim();
-        
-        if (name && email && text) {
-            const comments = JSON.parse(localStorage.getItem('portfolioComments')) || [];
-            comments.unshift({ name, email, text });
-            localStorage.setItem('portfolioComments', JSON.stringify(comments));
-            
-            commentForm.reset();
-            loadComments();
-        }
-    });
-    
-    loadComments();
-
-    
-// Background Music Handler (optimized)
-function initializeAudioPlayer() {
-    const bgMusic = document.getElementById('bgMusic');
-    const muteButton = document.getElementById('muteButton');
-    
-    if (!bgMusic || !muteButton) return;
-    
-    const isMuted = localStorage.getItem('audioMuted') === 'true';
-    const savedCurrentTime = parseFloat(localStorage.getItem('audioCurrentTime')) || 0;
-    
-    if (isMuted) {
-        bgMusic.muted = true;
-        muteButton.classList.add('muted');
-    }
-    
-    // Restore playback position
-    bgMusic.addEventListener('loadedmetadata', function() {
-        if (bgMusic.readyState >= 2) {
-            bgMusic.currentTime = Math.min(savedCurrentTime, bgMusic.duration);
-        }
-    });
-    
-    // Save on page navigation
-    window.addEventListener('beforeunload', function() {
-        localStorage.setItem('audioCurrentTime', bgMusic.currentTime.toString());
-        localStorage.setItem('audioWasPlaying', !bgMusic.paused);
-    });
-    
-    // Mute toggle
-    muteButton.addEventListener('click', function(e) {
-        e.stopPropagation();
-        bgMusic.muted = !bgMusic.muted;
-        
-        if (bgMusic.muted) {
-            muteButton.classList.add('muted');
-            localStorage.setItem('audioMuted', 'true');
-        } else {
-            muteButton.classList.remove('muted');
-            localStorage.setItem('audioMuted', 'false');
-            bgMusic.play().catch(err => console.log('Audio play failed:', err));
-        }
-    });
-    
-    // Play on first user interaction
-    function playAudio() {
-        if (!bgMusic.muted && bgMusic.paused) {
-            bgMusic.play().catch(err => console.log('Audio play failed:', err));
-        }
-    }
-    
-    document.addEventListener('click', playAudio, { once: true });
-    document.addEventListener('keydown', playAudio, { once: true });
-}
-
-// Initialize on DOM ready - call early initialization functions
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof initializeAudioPlayer === 'function') {
-            initializeAudioPlayer();
-        }
-    });
-} else {
-    if (typeof initializeAudioPlayer === 'function') {
-        initializeAudioPlayer();
-    }
-}
-
-// Scroll optimization with throttling
-let scrollTimeout = null;
-window.addEventListener('scroll', function() {
-    if (!scrollTimeout) {
-        scrollTimeout = requestAnimationFrame(() => {
-            // Lazy load logic can go here
-            scrollTimeout = null;
-        });
-    }
-}, { passive: true });
-
-// Prevent layout thrashing
-requestAnimationFrame(function() {
-    // Batch DOM reads here if needed
 });

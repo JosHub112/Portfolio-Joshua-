@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffd400">
+    <link rel="stylesheet" href="HomePage.css">
+    <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="songs.css">
+    <link rel="stylesheet" href="songs-theme.css">
+    <title>MY SONGS - Joshua Visser</title>
+</head>
+
+<body class="songs-page" data-theme="keyhearts">
+    <header class="header">
+        <div class="header__container">
+            <h1 class="header__title">JOSHUA VISSER</h1>
+            <button class="burger" id="burgerBtn" aria-label="Toggle navigation menu">
+                <span class="burger__line"></span>
+                <span class="burger__line"></span>
+                <span class="burger__line"></span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="nav" id="navMenu" aria-label="Main navigation">
+        <a href="index.html" class="nav__link">Home</a>
+        <a href="about.html" class="nav__link">CV</a>
+        <a href="skills.html" class="nav__link">Skills</a>
+        <a href="projects.html" class="nav__link">Projects</a>
+        <a href="songs.html" class="nav__link active">MY SONGS</a>
+        <a href="contact.html" class="nav__link">Contact</a>
+    </nav>
+
+    <main class="songs-main">
+        <section class="songs-intro" aria-labelledby="songs-title">
+            <p class="songs-kicker">RHYTHM//SYSTEM ONLINE</p>
+            <h2 id="songs-title">MY SONGS</h2>
+            <p>Not only can I write code and make digital art, I am also learning to be a producer. At the moment, it is more of a hobby, but I would be happy to expand on this and maybe become a music composer for games. I made this tab to show the songs I am really proud of, but also to show what more I can do.</p>
+            <p>Pick a track, lock into the beat, and survive the drop. Hit the arrows when they cross the line. If the timing feels off, press [ or ] to nudge it.</p>
+        </section>
+
+        <section class="song-select-panel" aria-labelledby="select-title">
+            <div class="songs-panel-heading">
+                <div>
+                    <p class="songs-kicker">01 / SELECT TRACK</p>
+                    <h3 id="select-title">Choose your vibe</h3>
+                </div>
+                <span class="song-count" id="songCount">5 TRACKS LOADED</span>
+            </div>
+            <div class="song-list" id="songList"></div>
+        </section>
+
+        <section class="rhythm-panel" id="rhythmPanel" aria-labelledby="game-title">
+            <div class="game-heading">
+                <div>
+                    <p class="songs-kicker">02 / LIVE MIX</p>
+                    <h3 id="game-title">Ready when you are</h3>
+                </div>
+                <div class="game-stats" aria-live="polite">
+                    <span><strong id="scoreValue">000000</strong><small>SCORE</small></span>
+                    <span><strong id="comboValue">0</strong><small>COMBO</small></span>
+                    <span><strong id="accuracyValue">100%</strong><small>ACCURACY</small></span>
+                </div>
+            </div>
+
+            <div class="difficulty-picker" role="group" aria-label="Difficulty">
+                <span class="difficulty-label">DIFFICULTY</span>
+                <button class="difficulty-button is-selected" type="button" data-difficulty="easy">EASY</button>
+                <button class="difficulty-button" type="button" data-difficulty="normal">NORMAL</button>
+                <button class="difficulty-button" type="button" data-difficulty="hard">HARD</button>
+            </div>
+
+            <div class="game-stage" id="gameStage">
+                <div class="stage-copy" id="stageCopy">
+                    <span class="stage-copy__eyebrow">SELECT A SONG TO START</span>
+                    <strong>MAKE SOME NOISE</strong>
+                    <span>Use arrow keys or tap the lanes</span>
+                </div>
+                <div class="lane-board" id="laneBoard" aria-label="Rhythm game lanes">
+                    <div class="lane lane--left" data-lane="0"><span class="lane-key">←</span></div>
+                    <div class="lane lane--down" data-lane="1"><span class="lane-key">↓</span></div>
+                    <div class="lane lane--up" data-lane="2"><span class="lane-key">↑</span></div>
+                    <div class="lane lane--right" data-lane="3"><span class="lane-key">→</span></div>
+                    <div class="hit-line" aria-hidden="true"></div>
+                    <div class="judgement" id="judgement" aria-live="polite"></div>
+                </div>
+            </div>
+            <div class="game-controls">
+                <button class="game-button" id="startButton" type="button" disabled>SELECT A SONG</button>
+                <button class="game-button game-button--quiet" id="stopButton" type="button" disabled>STOP RUN</button>
+                <span class="game-hint">ARROW KEYS <i>or</i> tap lanes</span>
+            </div>
+            <div class="game-status" id="gameStatus" role="status">Choose a song to load its chart.</div>
+        </section>
+    </main>
+
+    <audio id="songAudio" preload="metadata"></audio>
+    <script src="pages.js"></script>
+    <script src="songs.js"></script>
+</body>
+
+</html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="HomePage.css">
     <link rel="stylesheet" href="pages.css">
     <title>Contact - Joshua Visser</title>
@@ -28,6 +28,7 @@
         <a href="about.html" class="nav__link">CV</a>
         <a href="skills.html" class="nav__link">Skills</a>
         <a href="projects.html" class="nav__link">Projects</a>
+        <a href="songs.html" class="nav__link">MY SONGS</a>
         <a href="contact.html" class="nav__link active">Contact</a>
     </nav>
 
@@ -56,6 +57,57 @@
                     </a>
                 </div>
             </div>
+
+            <section class="review-panel dialogue-content" aria-labelledby="review-title">
+                <h2 id="review-title" class="dialogue-title">Leave a Review</h2>
+                <p class="dialogue-text">Share your thoughts about the portfolio or the projects. Choose an avatar, enter your name, and send your comment.</p>
+
+                <form id="reviewForm" class="review-form">
+                    <div class="review-form__field">
+                        <label for="reviewName">Name</label>
+                        <input id="reviewName" name="name" type="text" maxlength="40" required placeholder="Enter your name">
+                    </div>
+
+                    <fieldset class="avatar-picker">
+                        <legend>Choose a profile icon</legend>
+                        <div class="avatar-picker__options">
+                            <label class="avatar-option avatar-option--gold">
+                                <input type="radio" name="avatar" value="A" checked>
+                                <span aria-hidden="true">A</span>
+                                <strong>Gold</strong>
+                            </label>
+                            <label class="avatar-option avatar-option--rust">
+                                <input type="radio" name="avatar" value="R">
+                                <span aria-hidden="true">R</span>
+                                <strong>Rust</strong>
+                            </label>
+                            <label class="avatar-option avatar-option--cyan">
+                                <input type="radio" name="avatar" value="C">
+                                <span aria-hidden="true">C</span>
+                                <strong>Cyan</strong>
+                            </label>
+                            <label class="avatar-option avatar-option--violet">
+                                <input type="radio" name="avatar" value="V">
+                                <span aria-hidden="true">V</span>
+                                <strong>Violet</strong>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <div class="review-form__field">
+                        <label for="reviewComment">Comment</label>
+                        <textarea id="reviewComment" name="comment" maxlength="500" rows="5" required placeholder="Write your review..."></textarea>
+                    </div>
+
+                    <button class="review-submit" type="submit">Send Review</button>
+                    <p id="reviewStatus" class="review-status" role="status" aria-live="polite"></p>
+                </form>
+
+                <div class="review-list" aria-live="polite">
+                    <h3 class="review-list__title">Visitor Reviews</h3>
+                    <div id="reviewEntries" class="review-list__entries"></div>
+                </div>
+            </section>
 
 
         </div>
