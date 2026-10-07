@@ -215,7 +215,7 @@ body .section-content::after,body .dialogue-content::after,body .video-tab-conte
 body .dialogue-title,body .project-card-title{animation:slam .6s var(--ease) .3s backwards}
 
 /* skills: Social-Status "RANK UP!" tag */
-.skills-grid::before{content:'RANK UP!';grid-column:1/-1;justify-self:start;padding:.3rem 1.8rem;font-family:var(--head);font-style:italic;font-weight:900;font-size:1.8rem;color:#0a0a0a;background:#fff;clip-path:var(--slant);rotate:-3deg;animation:slam .7s var(--ease) .5s backwards}
+.skills-grid::before{content:'MY SKILLS!';grid-column:1/-1;justify-self:start;padding:.3rem 1.8rem;font-family:var(--head);font-style:italic;font-weight:900;font-size:1.8rem;color:#0a0a0a;background:#fff;clip-path:var(--slant);rotate:-3deg;animation:slam .7s var(--ease) .5s backwards}
 
 /* projects: videos become CRT TVs */
 body .video-card-rectangular{border:12px solid #121212;border-bottom-width:26px;border-radius:20px;box-shadow:0 0 0 3px #ff4a1c,0 0 36px rgba(255,74,28,.55)}
