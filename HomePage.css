@@ -70,7 +70,7 @@ body::after{
 .burger{display:none}
 
 /* ---------- Tilted menu tabs ---------- */
-.nav{display:flex;flex-wrap:wrap;gap:.7rem;padding:1.2rem clamp(1rem,5vw,4rem) .4rem}
+.nav{display:flex;flex-wrap:wrap;justify-content:center;gap:.7rem;padding:1.2rem clamp(1rem,5vw,4rem) .4rem}
 .nav__link,.video-tab-button{
   position:relative;overflow:hidden;display:inline-block;
   font-family:var(--head);font-style:italic;font-weight:900;font-size:1.15rem;letter-spacing:.03em;text-decoration:none;
@@ -198,28 +198,28 @@ html.ready::before,html.ready::after{display:none}
 /* ================= v3: real 3D, motion, props (transform/opacity only) ================= */
 body{padding-bottom:2.6rem}
 body::after{height:auto;aspect-ratio:520/420;bottom:2rem;transform-origin:50% 100%;animation:figIn 1.1s var(--ease) backwards,sway 7s ease-in-out 1.1s infinite}
-@media (min-width:1100px){body::after{width:min(32vw,540px)}body main.page-container,body main.tech-grid{margin-left:min(24vw,400px)}}
+@media (min-width:1100px){
+  body::after{width:min(32vw,540px)}
+  body main.page-container,body main.tech-grid{margin-left:auto;margin-right:auto}
+}
 
 /* header: flickering CRT scanlines over the TV wall */
 .header::before{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.3) 0 2px,transparent 2px 4px);animation:flick 2.6s steps(1) infinite}
 
 /* TV mound peeking over the content + scrolling ticker bar */
-main::before{content:'';position:absolute;right:2vw;top:-70px;width:min(30vw,340px);aspect-ratio:520/300;pointer-events:none;background:var(--tvs) center/contain no-repeat,radial-gradient(closest-side,rgba(255,60,20,.55),transparent);animation:bob 6s ease-in-out infinite,flick 3.1s steps(1) infinite}
+main::before{display:none}
 main::after{content:"✦ GAME DEVELOPER ✦ GAME DESIGNER ✦ UNITY ✦ ROBLOX ✦ TV WORLD ✦ GAME DEVELOPER ✦ GAME DESIGNER ✦ UNITY ✦ ROBLOX ✦ TV WORLD ✦ GAME DEVELOPER ✦ GAME DESIGNER ✦ UNITY ✦ ROBLOX ✦ TV WORLD ✦ GAME DEVELOPER ✦ GAME DESIGNER ✦ UNITY ✦ ROBLOX ✦ TV WORLD ✦ GAME DEVELOPER ✦ GAME DESIGNER ✦ UNITY ✦ ROBLOX ✦ TV WORLD ✦ GAME DEVELOPER ✦ GAME DESIGNER ✦ UNITY ✦ ROBLOX ✦ TV WORLD ✦ GAME DEVELOPER ✦ GAME DESIGNER ✦ UNITY ✦ ROBLOX ✦ TV WORLD ✦ GAME DEVELOPER ✦ GAME DESIGNER ✦ UNITY ✦ ROBLOX ✦ TV WORLD ";position:fixed;left:0;bottom:0;z-index:900;width:max-content;padding:.3rem 0;white-space:nowrap;pointer-events:none;font-family:var(--head);font-style:italic;font-weight:900;font-size:1rem;letter-spacing:.06em;color:var(--cyan);background:var(--bg0);border-top:3px solid var(--cyan);animation:marquee 40s linear infinite}
 
-/* panels: 3D fly-in, 3D hover tilt, spinning flower badge, slamming titles */
-body .section-content,body .dialogue-content,body .video-tab-content{transition:transform .45s var(--ease)}
-body .section-content:hover,body .dialogue-content:hover{transform:perspective(1400px) rotateY(-3.5deg) rotateX(1.5deg) scale(1.01)}
+/* panels: animated entry, spinning flower badge, slamming titles */
 body .section-content::after,body .dialogue-content::after,body .video-tab-content::after{right:18px;bottom:12px;width:46px;height:46px;background:var(--flowerY) center/contain no-repeat;animation:spin 14s linear infinite}
 body .dialogue-title,body .project-card-title{animation:slam .6s var(--ease) .3s backwards}
 
-/* skills: Social-Status "RANK UP!" tag + 3D tile hover */
+/* skills: Social-Status "RANK UP!" tag */
 .skills-grid::before{content:'RANK UP!';grid-column:1/-1;justify-self:start;padding:.3rem 1.8rem;font-family:var(--head);font-style:italic;font-weight:900;font-size:1.8rem;color:#0a0a0a;background:#fff;clip-path:var(--slant);rotate:-3deg;animation:slam .7s var(--ease) .5s backwards}
-body .skill-item:hover{transform:perspective(500px) translateY(-6px) rotateX(10deg) rotateY(-12deg) scale(1.06)}
 
 /* projects: videos become CRT TVs */
-body .video-card-rectangular{border:12px solid #121212;border-bottom-width:26px;border-radius:20px;box-shadow:0 0 0 3px #ff4a1c,0 0 36px rgba(255,74,28,.55);transform:perspective(900px) rotateY(4deg);transition:transform .45s var(--ease)}
-body .video-card-rectangular:hover{transform:perspective(900px) rotateY(0) scale(1.02);box-shadow:0 0 0 3px #fff,0 0 46px rgba(255,74,28,.8)}
+body .video-card-rectangular{border:12px solid #121212;border-bottom-width:26px;border-radius:20px;box-shadow:0 0 0 3px #ff4a1c,0 0 36px rgba(255,74,28,.55)}
+body .video-card-rectangular:hover{box-shadow:0 0 0 3px #fff,0 0 46px rgba(255,74,28,.8)}
 .video-card-rectangular::after{content:'';position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 2px,transparent 2px 4px)}
 
 /* page transition: black flower stamped on the yellow slash */
