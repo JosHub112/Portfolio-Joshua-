@@ -31,6 +31,14 @@ main.tech-grid > section:nth-of-type(3) .section-content{animation-delay:.24s}
 .dialogue-text + .dialogue-text{margin-top:1rem}
 #internships .section-content img{background:rgba(255,255,255,.92);padding:10px 14px}
 
+/* ---------- About profile ---------- */
+.about-profile{display:grid;grid-template-columns:minmax(180px, .8fr) minmax(0, 1.7fr);gap:clamp(1.5rem,4vw,3rem);align-items:center}
+.about-profile__portrait{margin:0;justify-self:center;position:relative;width:min(100%,336px);padding:.55rem;background:var(--chip);box-shadow:0 0 0 1px var(--line);clip-path:var(--cut);rotate:-2deg}
+.about-profile__portrait::before{content:'';position:absolute;inset:.55rem;border:1px solid var(--cyan);pointer-events:none}
+.about-profile__portrait img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;filter:grayscale(1);clip-path:var(--cut)}
+.about-profile__portrait figcaption{padding:.55rem .3rem .1rem;font-family:var(--head);font-size:.9rem;font-style:italic;letter-spacing:.12em;text-align:center;text-transform:uppercase;color:var(--ice)}
+.about-profile__text{min-width:0}
+
 /* ---------- Skills (Crystarium-style tiles with level bars) ---------- */
 .skills-content{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start}
 .skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem}
@@ -69,7 +77,7 @@ main.tech-grid > section:nth-of-type(3) .section-content{animation-delay:.24s}
 .video-tab-button{padding:.65rem 1.4rem;font-size:.9rem;white-space:nowrap}
 .video-tab-content{display:none}
 .video-tab-content.active{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:2rem;align-items:start;animation:panelIn .45s var(--ease) backwards}
-.soulbond-media-grid{display:grid;gap:1rem}
+.soulbond-media-grid{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem;min-width:0}
 .soulbond-info{grid-column:1 / -1;align-items:center;text-align:center}
 .soulbond-notes{width:100%;max-width:1180px;margin:1rem auto 0;padding-top:1rem;border-top:1px solid var(--line);text-align:left}
 .soulbond-notes-title{margin-bottom:.65rem;font-family:var(--head);font-size:1.05rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ice)}
@@ -169,7 +177,11 @@ button[type=submit]:hover{transform:translateX(4px)}
   .skills-content{grid-template-columns:1fr}
   .skills-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
   .contact-links{flex-direction:column;align-items:flex-start}
+  .about-profile{grid-template-columns:minmax(150px, .65fr) minmax(0, 1.35fr);gap:1.5rem}
 }
 @media (max-width:560px){
   .soulbond-snippets{grid-template-columns:1fr}
+  .soulbond-media-grid{grid-template-columns:1fr}
+  .about-profile{grid-template-columns:1fr;gap:1.25rem}
+  .about-profile__portrait{width:min(72vw,280px)}
 }

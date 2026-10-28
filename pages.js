@@ -97,8 +97,12 @@ document.addEventListener('DOMContentLoaded', function () {
         el.style.animationDelay = (0.2 + i * 0.07) + 's';
     });
 
-    // ---------- Heavy media: don't download anything until needed ----------
-    document.querySelectorAll('video').forEach(v => { v.preload = 'none'; });
+    // ---------- Heavy media: preload the active tab so its first frame is visible ----------
+    document.querySelectorAll('video').forEach(v => {
+        const isActive = v.closest('.video-tab-content.active');
+        v.preload = isActive ? 'auto' : 'metadata';
+        if (isActive) v.load();
+    });
     document.querySelectorAll('img').forEach(img => { img.loading = 'lazy'; img.decoding = 'async'; });
 
     // ---------- Code snippet lightbox ----------
@@ -171,7 +175,13 @@ document.addEventListener('DOMContentLoaded', function () {
             tabButtons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const panel = document.getElementById(btn.dataset.tab);
-            if (panel) panel.classList.add('active');
+            if (panel) {
+                panel.classList.add('active');
+                panel.querySelectorAll('video').forEach(video => {
+                    video.preload = 'auto';
+                    video.load();
+                });
+            }
         });
     });
 
