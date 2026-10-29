@@ -105,15 +105,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     document.querySelectorAll('img').forEach(img => { img.loading = 'lazy'; img.decoding = 'async'; });
 
-    // ---------- Code snippet lightbox ----------
-    const snippetImages = document.querySelectorAll('.soulbond-snippet img');
-    if (snippetImages.length) {
+    // ---------- Project image lightbox ----------
+    const lightboxImages = document.querySelectorAll('.soulbond-snippet img, .tower-defence-image');
+    if (lightboxImages.length) {
         const lightbox = document.createElement('div');
         lightbox.className = 'snippet-lightbox';
         lightbox.setAttribute('aria-hidden', 'true');
         lightbox.innerHTML = `
             <div class="snippet-lightbox__backdrop" data-lightbox-close></div>
-            <div class="snippet-lightbox__dialog" role="dialog" aria-modal="true" aria-label="Expanded SoulBond code snippet">
+            <div class="snippet-lightbox__dialog" role="dialog" aria-modal="true" aria-label="Expanded project image">
                 <button class="snippet-lightbox__close" type="button" aria-label="Close expanded image" data-lightbox-close>&times;</button>
                 <img class="snippet-lightbox__image" alt="">
                 <p class="snippet-lightbox__caption"></p>
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.body.classList.remove('lightbox-open');
         };
 
-        snippetImages.forEach(image => {
+        lightboxImages.forEach(image => {
             image.setAttribute('tabindex', '0');
             image.setAttribute('role', 'button');
             image.setAttribute('aria-label', `${image.alt}. Click to expand.`);
